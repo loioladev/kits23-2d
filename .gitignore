@@ -15,6 +15,7 @@ wheels/
 # Github repository from KiTS32
 kits32/
 
-# Datasets
+# Folders used
 dataset/
 kits32-2d/
+stats_output/

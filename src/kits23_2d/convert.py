@@ -4,19 +4,15 @@ into a 2D COCO-format instance detection/segmentation dataset.
 Each case's imaging.nii.gz is sliced along the axial axis. For every lesion
 instance under instances/, the up-to-3 annotator masks are fused via majority
 vote, then any axial slice touching that instance becomes a COCO annotation
-(bbox + RLE segmentation). A configurable ratio of slices with no annotated
-instance is also included so downstream models see negative examples.
+(bbox + RLE segmentation).
 
 KiTS instance masks overlap across classes: a kidney instance covers the whole
-kidney *including* any tumor or cyst growing inside it, and the official
-segmentation.nii.gz resolves that by painting labels in LABEL_AGGREGATION_ORDER.
-The export preserves the raw instance masks, so a tumor annotation and its
-parent kidney annotation cover the same pixels. Painting the exported
-annotations in that same order (as coco_dataset.rasterize_semantic_mask does)
-reproduces segmentation.nii.gz pixel for pixel.
+kidney *including* any tumor or cyst growing inside it. The export preserves
+the raw instance masks, so a tumor annotation and its parent kidney annotation 
+cover the same pixels.
 
 Usage:
-    python -m kits23.export.coco_convert --output-dir coco_dataset
+    uv run  src/kits32_32/convert.py --dataset-dir dataset --output-dir kits32-2d
 """
 
 import argparse
