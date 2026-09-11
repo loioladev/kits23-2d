@@ -1,0 +1,21 @@
+[project]
+name = "kits23-2d-model"
+version = "0.1.0"
+description = "Repository to train detection and segmentation models for the KiTS23 challenge using 2D slices."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "opencv-python>=5.0.0.93",
+    "pycocotools>=2.0.11",
+    "simpleitk>=2.5.6",
+    "tqdm>=4.70.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.8,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.6",
+]

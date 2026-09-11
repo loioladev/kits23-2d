@@ -1,0 +1,20 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# VSCode settings
+.vscode/
+
+# Virtual environments
+.venv
+
+# Github repository from KiTS32
+kits32/
+
+# Datasets
+dataset/
+kits32-2d/
