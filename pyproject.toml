@@ -5,11 +5,32 @@ description = "Repository to train detection and segmentation models for the KiT
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "albumentations>=2.0.8",
+    "matplotlib>=3.11.1",
+    "mlflow>=3.16.0",
     "opencv-python>=5.0.0.93",
+    "optuna>=5.0.0",
     "pycocotools>=2.0.11",
+    "pyyaml>=6.0.3",
+    "segmentation-models-pytorch>=0.5.0",
     "simpleitk>=2.5.6",
+    "torch>=2.14.0",
+    "torchvision>=0.29.0",
     "tqdm>=4.70.0",
 ]
+
+[project.scripts]
+kits23-convert = "kits23_2d.convert:main"
+kits23-stats = "kits23_2d.stats:main"
+kits23-train-seg = "kits23_2d.train_seg:main"
+kits23-train-det = "kits23_2d.train_det:main"
+kits23-tune-seg = "kits23_2d.tune_seg:main"
+kits23-tune-det = "kits23_2d.tune_det:main"
+kits23-evaluate = "kits23_2d.evaluate:main"
+
+[tool.uv.build-backend]
+# Distribution is "kits23-2d-model" but the import package is "kits23_2d".
+module-name = "kits23_2d"
 
 [build-system]
 requires = ["uv_build>=0.12.8,<0.13.0"]
@@ -19,3 +40,15 @@ build-backend = "uv_build"
 dev = [
     "ruff>=0.16.6",
 ]
+
+# The GPU targeted by this repository is a GTX 1080 (Pascal, sm_61). The default
+# PyPI torch wheels are built against CUDA 13.x, which dropped Pascal support, so
+# torch/torchvision must come from the CUDA 12.6 index instead.
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu126" }
+torchvision = { index = "pytorch-cu126" }

@@ -1,0 +1,35 @@
+# Full-scale UNet training. Tuned for a single 8 GB GPU at 512x512.
+dataset_dir: kits32-2d
+size: 512
+in_channels: 3
+
+arch: unet
+encoder: resnet34
+encoder_weights: imagenet
+attention: ""
+
+loss: dicece
+dice_weight: 0.5
+ce_weight: 0.5
+monitor: mean_dice
+
+epochs: 30
+batch_size: 8
+lr: 3.0e-4
+weight_decay: 1.0e-4
+optimizer: adamw
+scheduler: cosine
+warmup_iters: 250
+amp: true
+patience: 6
+
+# Half of the exported slices are annotation-free. Keeping all of them teaches
+# the model what "no kidney here" looks like, but costs twice the epoch time;
+# drop to ~0.3 if epochs are too slow.
+empty_ratio: 1.0
+aug_strength: medium
+
+num_workers: 8
+experiment: kits23-seg
+output_dir: runs/seg-unet-resnet34
+log_images: 8

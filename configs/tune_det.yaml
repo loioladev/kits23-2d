@@ -1,0 +1,38 @@
+# Optuna study for detection.
+#
+# Faster R-CNN is several times slower per epoch than the UNet, so the subset
+# here is smaller still. Retrain the winner with configs/det_frcnn.yaml.
+dataset_dir: kits32-2d
+size: 512
+pretrained: true
+min_box_size: 4.0
+
+epochs: 4
+max_train_images: 2000
+max_val_images: 500
+empty_ratio: 0.3
+scheduler: cosine
+warmup_iters: 100
+clip_grad: 10.0
+amp: true
+patience: 0
+monitor: mAP
+
+num_workers: 8
+experiment: kits23-det-tuning
+output_dir: runs/tune-det
+storage: optuna-det.db
+n_trials: 15
+n_startup_trials: 4
+n_warmup_steps: 2
+log_images: 0
+
+search_space:
+  lr: {type: float, low: 1.0e-5, high: 5.0e-3, log: true}
+  weight_decay: {type: float, low: 1.0e-6, high: 1.0e-2, log: true}
+  optimizer: {type: categorical, choices: [adamw, sgd]}
+  momentum: {type: float, low: 0.8, high: 0.99}
+  batch_size: {type: categorical, choices: [2, 4]}
+  trainable_backbone_layers: {type: int, low: 1, high: 5}
+  arch: {type: categorical, choices: [resnet50, mobilenet]}
+  aug_strength: {type: categorical, choices: [light, medium, heavy]}

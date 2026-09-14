@@ -127,7 +127,9 @@ def draw_annotations(image: np.ndarray, anns: list, categories: dict) -> np.ndar
     image : np.ndarray
         The BGR image to draw on (not modified in place).
     anns : list
-        COCO annotation dicts (with RLE segmentation and bbox) for this image.
+        COCO annotation dicts (with bbox, and optionally an RLE segmentation)
+        for this image. Model predictions carry boxes only, so the mask overlay
+        is skipped when "segmentation" is absent.
     categories : dict
         Mapping of category_id -> category name.
 
@@ -139,8 +141,9 @@ def draw_annotations(image: np.ndarray, anns: list, categories: dict) -> np.ndar
     overlay = image.copy()
     for ann in anns:
         color = np.array(CATEGORY_COLORS.get(ann["category_id"], DEFAULT_COLOR))
-        mask = mask_utils.decode(ann["segmentation"]).astype(bool)
-        overlay[mask] = (overlay[mask] * 0.5 + color * 0.5).astype(np.uint8)
+        if "segmentation" in ann:
+            mask = mask_utils.decode(ann["segmentation"]).astype(bool)
+            overlay[mask] = (overlay[mask] * 0.5 + color * 0.5).astype(np.uint8)
 
         x, y, w, h = (round(v) for v in ann["bbox"])
         cv2.rectangle(overlay, (x, y), (x + w, y + h), color.tolist(), 1)

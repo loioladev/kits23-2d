@@ -1,0 +1,41 @@
+# Optuna study for segmentation.
+#
+# A full epoch over the 43,815 training slices takes a long time on a single
+# consumer GPU, so trials deliberately run on a subset for a few epochs. Treat
+# the result as a ranking of configurations, then retrain the winner at full
+# scale with configs/seg_unet.yaml.
+dataset_dir: kits32-2d
+size: 512
+in_channels: 3
+encoder_weights: imagenet
+
+epochs: 4
+max_train_images: 4000
+max_val_images: 1000
+empty_ratio: 0.3
+scheduler: cosine
+warmup_iters: 100
+amp: true
+patience: 0
+monitor: mean_dice
+
+num_workers: 8
+experiment: kits23-seg-tuning
+output_dir: runs/tune-seg
+storage: optuna-seg.db
+n_trials: 20
+n_startup_trials: 5
+n_warmup_steps: 2
+# Prediction grids per trial are mostly noise during a search.
+log_images: 0
+
+search_space:
+  lr: {type: float, low: 1.0e-5, high: 1.0e-2, log: true}
+  weight_decay: {type: float, low: 1.0e-6, high: 1.0e-2, log: true}
+  batch_size: {type: categorical, choices: [4, 8, 16]}
+  optimizer: {type: categorical, choices: [adamw, sgd]}
+  encoder: {type: categorical, choices: [resnet34, resnet50, efficientnet-b0]}
+  arch: {type: categorical, choices: [unet, unetplusplus]}
+  loss: {type: categorical, choices: [dicece, dice, focaldice, tversky]}
+  dice_weight: {type: float, low: 0.2, high: 0.8}
+  aug_strength: {type: categorical, choices: [light, medium, heavy]}

@@ -19,3 +19,10 @@ kits32/
 dataset/
 kits32-2d/
 stats_output/
+
+# Training / experiment outputs
+mlruns/
+runs/
+checkpoints/
+eval_output/
+*.db
