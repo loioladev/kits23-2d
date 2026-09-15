@@ -18,6 +18,7 @@ import json
 import random
 from pathlib import Path
 
+import albumentations
 import cv2
 import numpy as np
 import torch
@@ -194,7 +195,7 @@ def build_label_map(anns: list, height: int, width: int) -> np.ndarray:
 class KiTSSegDataset(Dataset):
     """Semantic segmentation view of the 2D KiTS export."""
 
-    def __init__(self, index: CocoIndex, transform, in_channels: int = 3):
+    def __init__(self, index: CocoIndex, transform: albumentations.Compose, in_channels: int = 3):
         """Wrap a CocoIndex with an Albumentations pipeline.
 
         Parameters

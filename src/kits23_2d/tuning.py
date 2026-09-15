@@ -1,7 +1,7 @@
 """Shared Optuna driver for the two tuning entry points.
 
 Both studies do the same thing: sample a point from the YAML search space,
-apply it on top of the base config, and run a real (but shortened) training,
+apply it on top of the base config, and run a real shortened training,
 reporting the monitored metric to Optuna after every epoch so unpromising
 trials get pruned early.
 
@@ -16,6 +16,7 @@ import optuna
 import torch
 
 from kits23_2d.config import apply_overrides, suggest_from_space
+from kits23_2d.engine import NonFiniteLossError
 from kits23_2d.tracking import start_run
 
 
@@ -48,7 +49,7 @@ def add_tuning_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     return parser
 
 
-def run_study(cfg, run_training, default_study_name: str) -> optuna.Study:
+def run_study(cfg: argparse.Namespace, run_training: callable, default_study_name: str) -> optuna.Study:
     """Create or resume a study and optimize it.
 
     Parameters
@@ -67,25 +68,21 @@ def run_study(cfg, run_training, default_study_name: str) -> optuna.Study:
     """
     space = cfg.config_values.get("search_space")
     if not space:
-        raise SystemExit(
-            "no 'search_space' block in the config; pass --config configs/tune_*.yaml"
-        )
+        raise SystemExit("no 'search_space' block in the config; pass --config configs/tune_*.yaml")
 
     study = optuna.create_study(
         study_name=cfg.study_name or default_study_name,
         storage=f"sqlite:///{cfg.storage}",
         direction="maximize",
         load_if_exists=True,
-        sampler=optuna.samplers.TPESampler(
-            seed=cfg.seed, n_startup_trials=cfg.n_startup_trials
-        ),
-        pruner=optuna.pruners.MedianPruner(
-            n_startup_trials=cfg.n_startup_trials, n_warmup_steps=cfg.n_warmup_steps
-        ),
+        sampler=optuna.samplers.TPESampler(seed=cfg.seed, n_startup_trials=cfg.n_startup_trials),
+        pruner=optuna.pruners.MedianPruner(n_startup_trials=cfg.n_startup_trials, n_warmup_steps=cfg.n_warmup_steps),
     )
 
     with start_run(cfg, run_name=study.study_name):
+        # Update MLFlow information about the study so that it is visible in the parent run.
         mlflow.set_tag("optuna_study", study.study_name)
+        # Run the optuna search
         study.optimize(
             _make_objective(cfg, run_training, space),
             n_trials=cfg.n_trials,
@@ -97,7 +94,8 @@ def run_study(cfg, run_training, default_study_name: str) -> optuna.Study:
     return study
 
 
-def _make_objective(cfg, run_training, space: dict):
+
+def _make_objective(cfg: argparse.Namespace, run_training: callable, space: dict) -> callable:
     """Build the Optuna objective closure.
 
     Parameters
@@ -117,9 +115,9 @@ def _make_objective(cfg, run_training, space: dict):
 
     def objective(trial: optuna.Trial) -> float:
         params = suggest_from_space(trial, space)
+
+        # Create a copy of the base config and apply the sampled overrides.
         trial_cfg = apply_overrides(cfg, params)
-        # Each trial writes its own checkpoints, or they would overwrite
-        # each other in the shared output directory.
         trial_cfg.output_dir = trial_cfg.output_dir / f"trial_{trial.number:03d}"
 
         with start_run(trial_cfg, run_name=f"trial_{trial.number:03d}", nested=True):
@@ -127,13 +125,18 @@ def _make_objective(cfg, run_training, space: dict):
             try:
                 return run_training(trial_cfg, trial=trial)
             except optuna.TrialPruned:
+                # If the trial was pruned, we don't want to log it as a failure, but we do want to mark it in MLflow.
                 mlflow.set_tag("pruned", "true")
                 raise
             except torch_oom_errors() as error:
-                # A batch size the sampler tried simply does not fit in 8 GB;
-                # that is a property of the search space, not a crash.
+                # If the batch size didn't fit on the GPU, the trial is pruned and the study continues.
                 mlflow.set_tag("failed", str(error)[:250])
                 print(f"trial {trial.number} ran out of memory; pruning it")
+                raise optuna.TrialPruned() from error
+            except NonFiniteLossError as error:
+                # Avoid errors like NaN or Inf in the loss from crashing the whole study
+                mlflow.set_tag("failed", str(error)[:250])
+                print(f"trial {trial.number} diverged ({error}); pruning it")
                 raise optuna.TrialPruned() from error
 
     return objective

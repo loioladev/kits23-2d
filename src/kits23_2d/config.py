@@ -13,6 +13,7 @@ import copy
 import json
 from pathlib import Path
 
+import optuna
 import yaml
 
 # Category ids come from convert.py: 1=kidney, 2=tumor, 3=cyst, plus background.
@@ -188,7 +189,7 @@ def load_yaml(path: Path) -> dict:
         return yaml.safe_load(f) or {}
 
 
-def suggest_from_space(trial, space: dict) -> dict:
+def suggest_from_space(trial: optuna.Trial, space: dict) -> dict:
     """Turn a YAML search-space block into concrete Optuna suggestions.
 
     Each entry is ``name: {type: float|int|categorical, ...}``::

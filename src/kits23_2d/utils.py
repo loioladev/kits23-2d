@@ -29,7 +29,7 @@ def seed_everything(seed: int) -> None:
 
 
 def resolve_device(name: str) -> torch.device:
-    """Turn a device name into a torch.device, falling back to CPU.
+    """Turn a device name into a torch.device.
 
     Parameters
     ----------

@@ -26,8 +26,8 @@ from albumentations.pytorch import ToTensorV2
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
 
-# Per-strength knobs: (rotation degrees, scale jitter, translation fraction,
-# brightness/contrast limit, probability of each intensity op).
+# Intensity augmentations: (rotation degrees, scale jitter, translation 
+# fraction, brightness/contrast limit, probability of each intensity op).
 STRENGTHS = {
     "light": (7.0, 0.05, 0.03, 0.10, 0.2),
     "medium": (15.0, 0.10, 0.06, 0.20, 0.3),
@@ -76,9 +76,7 @@ def _intensity(strength: str) -> list:
     """
     _, _, _, bc_limit, p = STRENGTHS[strength]
     ops = [
-        A.RandomBrightnessContrast(
-            brightness_limit=bc_limit, contrast_limit=bc_limit, p=p
-        ),
+        A.RandomBrightnessContrast(brightness_limit=bc_limit, contrast_limit=bc_limit, p=p),
         A.RandomGamma(gamma_limit=(80, 120), p=p),
         A.GaussNoise(std_range=(0.01, 0.05), per_channel=False, p=p),
         A.GaussianBlur(blur_limit=(3, 5), p=p / 2),

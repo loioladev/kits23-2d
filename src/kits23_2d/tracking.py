@@ -1,9 +1,4 @@
-"""MLflow helpers and prediction visualizations.
-
-Visualizations reuse the overlay code already written for the dataset report in
-stats.py, so a predicted slice is drawn exactly like an annotated one and the
-two can be compared side by side.
-"""
+"""MLflow helpers and prediction visualizations."""
 
 import json
 from datetime import UTC, datetime
@@ -16,9 +11,6 @@ import torch
 from kits23_2d.config import CLASS_NAMES, config_to_dict
 from kits23_2d.stats import CATEGORY_COLORS, draw_annotations
 
-# MLflow 3.16 put the filesystem backend ("./mlruns") into maintenance mode and
-# refuses to use it without an opt-out env var, so runs go to a local SQLite
-# database instead. Browse it with:
 #     uv run mlflow ui --backend-store-uri sqlite:///mlflow.db
 DEFAULT_TRACKING_URI = "sqlite:///mlflow.db"
 

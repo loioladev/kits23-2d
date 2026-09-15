@@ -1,5 +1,5 @@
 [project]
-name = "kits23-2d-model"
+name = "kits23-2d"
 version = "0.1.0"
 description = "Repository to train detection and segmentation models for the KiTS23 challenge using 2D slices."
 readme = "README.md"
@@ -29,7 +29,6 @@ kits23-tune-det = "kits23_2d.tune_det:main"
 kits23-evaluate = "kits23_2d.evaluate:main"
 
 [tool.uv.build-backend]
-# Distribution is "kits23-2d-model" but the import package is "kits23_2d".
 module-name = "kits23_2d"
 
 [build-system]
@@ -41,9 +40,9 @@ dev = [
     "ruff>=0.16.6",
 ]
 
-# The GPU targeted by this repository is a GTX 1080 (Pascal, sm_61). The default
-# PyPI torch wheels are built against CUDA 13.x, which dropped Pascal support, so
-# torch/torchvision must come from the CUDA 12.6 index instead.
+# The GPU used by this repository is a GTX 1080 (Pascal, sm_61).
+# PyPI torch wheels are built against CUDA 13.x, which dropped Pascal
+# support, so torch/torchvision must come from the CUDA 12.6 index.
 [[tool.uv.index]]
 name = "pytorch-cu126"
 url = "https://download.pytorch.org/whl/cu126"

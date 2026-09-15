@@ -1,14 +1,7 @@
 """Evaluation metrics for both tasks.
 
 Segmentation metrics are accumulated into a single confusion matrix over the
-whole split and reduced only at the end. Averaging a per-image Dice would be
-misleading here: about half of the exported slices contain no annotation at
-all, and Dice on an empty image is either undefined or trivially 1.0, so a
-per-image mean mostly measures how many empty slices are in the split.
-
-The same confusion matrix also yields the KiTS hierarchical evaluation classes
-(kidney and masses / masses / tumor), because merging labels into a group is
-just summing the corresponding block of the matrix.
+whole split and reduced only at the end.
 """
 
 import contextlib
@@ -85,10 +78,6 @@ class SegmentationMetrics:
 
     def compute(self) -> dict:
         """Reduce the accumulated matrix into the reported metrics.
-
-        A group that is absent from both prediction and ground truth has no
-        defined Dice; it is reported as NaN rather than as a perfect 1.0, and
-        is skipped by the mean.
 
         Returns
         -------

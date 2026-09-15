@@ -1,11 +1,4 @@
-"""Segmentation losses, composed from the ones shipped with smp.
-
-The class distribution is heavily skewed (in the train split: 37,636 kidney
-annotations against 4,765 cyst ones, with cyst areas a median of 218 px), so a
-plain cross-entropy collapses onto background and kidney. The default is a
-Dice + cross-entropy mix, which is the usual remedy in the KiTS literature, and
-class weights can be supplied on top of that.
-"""
+"""Segmentation losses, composed from the ones shipped with smp."""
 
 import torch
 from segmentation_models_pytorch.losses import DiceLoss, FocalLoss, TverskyLoss

@@ -67,12 +67,7 @@ def build_detection_model(cfg) -> torch.nn.Module:
     model = builder(
         weights="DEFAULT" if cfg.pretrained else None,
         weights_backbone="DEFAULT" if cfg.pretrained else None,
-        # Freezing only makes sense relative to pretrained weights; when
-        # building a shell to load a checkpoint into, torchvision warns that
-        # the argument has no effect.
-        trainable_backbone_layers=(
-            cfg.trainable_backbone_layers if cfg.pretrained else None
-        ),
+        trainable_backbone_layers=(cfg.trainable_backbone_layers if cfg.pretrained else None),
         min_size=cfg.size,
         max_size=cfg.size,
     )

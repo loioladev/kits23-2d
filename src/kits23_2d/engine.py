@@ -4,10 +4,6 @@ Both tasks use the same skeleton: an optional linear warmup, gradient
 accumulation, optional AMP, and an epoch-level metric object. Keeping the loops
 here means train_seg.py and train_det.py only have to wire up a model, a loader,
 and a criterion.
-
-A note on AMP: the target GPU is a GTX 1080 (Pascal), which has no tensor cores,
-so float16 autocast buys memory headroom rather than throughput. It is still on
-by default because the memory is what limits the batch size at 512x512.
 """
 
 import math
@@ -16,6 +12,10 @@ import torch
 from tqdm import tqdm
 
 from kits23_2d.metrics import DetectionMetrics, SegmentationMetrics
+
+
+class NonFiniteLossError(RuntimeError):
+    """Raised when a training step produces a NaN or infinite loss."""
 
 
 class Warmup:
@@ -144,7 +144,7 @@ def train_one_epoch_seg(
             loss = criterion(logits, targets)
 
         if not math.isfinite(loss.item()):
-            raise RuntimeError(f"non-finite loss at epoch {epoch} step {i}")
+            raise NonFiniteLossError(f"non-finite loss at epoch {epoch} step {i}")
 
         scaler.scale(loss / cfg.accum_steps).backward()
         if (i + 1) % cfg.accum_steps == 0:
@@ -256,7 +256,7 @@ def train_one_epoch_det(
             loss = sum(loss_dict.values())
 
         if not math.isfinite(loss.item()):
-            raise RuntimeError(f"non-finite loss at epoch {epoch} step {i}")
+            raise NonFiniteLossError(f"non-finite loss at epoch {epoch} step {i}")
 
         scaler.scale(loss / cfg.accum_steps).backward()
         if (i + 1) % cfg.accum_steps == 0:
