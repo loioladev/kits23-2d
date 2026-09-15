@@ -88,7 +88,9 @@ class CocoIndex:
         images = self._subsample_empty(images, empty_ratio, seed)
         if max_images is not None and max_images < len(images):
             rng = random.Random(seed)
-            images = sorted(rng.sample(images, max_images), key=lambda r: r["file_name"])
+            images = sorted(
+                rng.sample(images, max_images), key=lambda r: r["file_name"]
+            )
         self.images = images
 
     def _subsample_empty(self, images: list, empty_ratio: float, seed: int) -> list:
@@ -195,7 +197,9 @@ def build_label_map(anns: list, height: int, width: int) -> np.ndarray:
 class KiTSSegDataset(Dataset):
     """Semantic segmentation view of the 2D KiTS export."""
 
-    def __init__(self, index: CocoIndex, transform: albumentations.Compose, in_channels: int = 3):
+    def __init__(
+        self, index: CocoIndex, transform: albumentations.Compose, in_channels: int = 3
+    ):
         """Wrap a CocoIndex with an Albumentations pipeline.
 
         Parameters

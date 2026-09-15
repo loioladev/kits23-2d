@@ -54,8 +54,9 @@ class Warmup:
         if self.done:
             return
         if global_step >= self.iters:
-            for group, base in zip(self.optimizer.param_groups, self.base_lrs,
-                                   strict=True):
+            for group, base in zip(
+                self.optimizer.param_groups, self.base_lrs, strict=True
+            ):
                 group["lr"] = base
             self.done = True
             return
@@ -93,8 +94,18 @@ def _optimizer_step(cfg, optimizer, scaler, model, scheduler, per_iteration) -> 
 
 
 def train_one_epoch_seg(
-    cfg, model, loader, criterion, optimizer, scaler, scheduler, per_iteration,
-    warmup, device, epoch, global_step,
+    cfg,
+    model,
+    loader,
+    criterion,
+    optimizer,
+    scaler,
+    scheduler,
+    per_iteration,
+    warmup,
+    device,
+    epoch,
+    global_step,
 ) -> tuple:
     """Run one training epoch of the segmentation model.
 
@@ -201,8 +212,17 @@ def validate_seg(cfg, model, loader, criterion, device) -> dict:
 
 
 def train_one_epoch_det(
-    cfg, model, loader, optimizer, scaler, scheduler, per_iteration,
-    warmup, device, epoch, global_step,
+    cfg,
+    model,
+    loader,
+    optimizer,
+    scaler,
+    scheduler,
+    per_iteration,
+    warmup,
+    device,
+    epoch,
+    global_step,
 ) -> tuple:
     """Run one training epoch of the detection model.
 

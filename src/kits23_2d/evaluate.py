@@ -58,9 +58,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=Path("eval_output"))
     parser.add_argument("--num-examples", type=int, default=8)
     parser.add_argument("--score-threshold", type=float, default=0.5)
-    parser.add_argument(
-        "--amp", action=argparse.BooleanOptionalAction, default=True
-    )
+    parser.add_argument("--amp", action=argparse.BooleanOptionalAction, default=True)
     return parser.parse_args()
 
 
@@ -170,7 +168,9 @@ def evaluate_seg(args, model, cfg, index: CocoIndex, device) -> dict:
         cfg.in_channels,
     )
     loader = DataLoader(
-        dataset, batch_size=args.batch_size, num_workers=args.num_workers,
+        dataset,
+        batch_size=args.batch_size,
+        num_workers=args.num_workers,
         pin_memory=True,
     )
     metrics = SegmentationMetrics(device=device)
@@ -228,8 +228,11 @@ def evaluate_det(args, model, cfg, index: CocoIndex, device) -> dict:
         cfg.min_box_size,
     )
     loader = DataLoader(
-        dataset, batch_size=args.batch_size, num_workers=args.num_workers,
-        pin_memory=True, collate_fn=detection_collate,
+        dataset,
+        batch_size=args.batch_size,
+        num_workers=args.num_workers,
+        pin_memory=True,
+        collate_fn=detection_collate,
     )
     metrics = DetectionMetrics(index.coco_subset())
     scale_back = make_box_rescaler(index, cfg.size)

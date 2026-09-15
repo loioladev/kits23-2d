@@ -99,9 +99,9 @@ def overlay_label_map(image: np.ndarray, label: np.ndarray, alpha: float = 0.5):
         mask = label == category_id
         if not mask.any():
             continue
-        overlay[mask] = (
-            overlay[mask] * (1 - alpha) + np.array(color) * alpha
-        ).astype(np.uint8)
+        overlay[mask] = (overlay[mask] * (1 - alpha) + np.array(color) * alpha).astype(
+            np.uint8
+        )
     return overlay
 
 
@@ -187,9 +187,7 @@ def det_prediction_grid(images, targets, outputs, score_threshold=0.5) -> np.nda
     for image, target, output in zip(images, targets, outputs, strict=True):
         base = denormalize(image, mean=(0.0, 0.0, 0.0), std=(1.0, 1.0, 1.0))
         truth = draw_annotations(base, _as_anns(target), categories)
-        guess = draw_annotations(
-            base, _as_anns(output, score_threshold), categories
-        )
+        guess = draw_annotations(base, _as_anns(output, score_threshold), categories)
         rows.append(np.concatenate([truth, guess], axis=1))
     grid = np.concatenate(rows, axis=0)
     return _annotate_columns(grid, ("ground truth", "prediction"))
@@ -248,8 +246,14 @@ def _annotate_columns(grid: np.ndarray, titles) -> np.ndarray:
     header = np.zeros((24, grid.shape[1], 3), dtype=np.uint8)
     for i, title in enumerate(titles):
         cv2.putText(
-            header, title, (i * width + 8, 16), cv2.FONT_HERSHEY_SIMPLEX,
-            0.5, (255, 255, 255), 1, cv2.LINE_AA,
+            header,
+            title,
+            (i * width + 8, 16),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (255, 255, 255),
+            1,
+            cv2.LINE_AA,
         )
     return np.concatenate([header, grid], axis=0)
 

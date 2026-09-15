@@ -87,8 +87,11 @@ def build_loaders(cfg) -> tuple:
         The two DataLoaders.
     """
     train_index = CocoIndex(
-        cfg.dataset_dir, cfg.train_split, empty_ratio=cfg.empty_ratio,
-        max_images=cfg.max_train_images, seed=cfg.seed,
+        cfg.dataset_dir,
+        cfg.train_split,
+        empty_ratio=cfg.empty_ratio,
+        max_images=cfg.max_train_images,
+        seed=cfg.seed,
     )
     val_index = CocoIndex(
         cfg.dataset_dir, cfg.val_split, max_images=cfg.max_val_images, seed=cfg.seed
@@ -113,9 +116,7 @@ def build_loaders(cfg) -> tuple:
     train_loader = DataLoader(
         train_set, batch_size=cfg.batch_size, shuffle=True, drop_last=True, **common
     )
-    val_loader = DataLoader(
-        val_set, batch_size=cfg.batch_size, shuffle=False, **common
-    )
+    val_loader = DataLoader(val_set, batch_size=cfg.batch_size, shuffle=False, **common)
     print(
         f"train: {len(train_set)}/{train_index.num_images_total} images | "
         f"val: {len(val_set)}/{val_index.num_images_total} images"
@@ -162,8 +163,18 @@ def run_training(cfg, trial=None) -> float:
 
     for epoch in range(cfg.epochs):
         train_loss, global_step = train_one_epoch_seg(
-            cfg, model, train_loader, criterion, optimizer, scaler, scheduler,
-            per_iteration, warmup, device, epoch, global_step,
+            cfg,
+            model,
+            train_loader,
+            criterion,
+            optimizer,
+            scaler,
+            scheduler,
+            per_iteration,
+            warmup,
+            device,
+            epoch,
+            global_step,
         )
         metrics = validate_seg(cfg, model, val_loader, criterion, device)
         metrics["train_loss"] = train_loss
@@ -187,9 +198,7 @@ def run_training(cfg, trial=None) -> float:
 
         if score > best:
             best = score
-            save_checkpoint(
-                run_dir / "best.pt", model, cfg, epoch, metrics, task="seg"
-            )
+            save_checkpoint(run_dir / "best.pt", model, cfg, epoch, metrics, task="seg")
             if cfg.log_images:
                 _log_predictions(cfg, model, val_loader, device, epoch)
 

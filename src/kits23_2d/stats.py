@@ -249,7 +249,9 @@ def print_report(split_stats: dict) -> None:
     print(f"images:       {total_images}")
     print(f"annotations:  {total_annotations}")
     if total_images:
-        print(f"empty images: {total_empty} ({100.0 * total_empty / total_images:.1f}%)")
+        print(
+            f"empty images: {total_empty} ({100.0 * total_empty / total_images:.1f}%)"
+        )
 
 
 def parse_args() -> argparse.Namespace:

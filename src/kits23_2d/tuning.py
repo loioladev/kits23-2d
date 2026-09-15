@@ -42,14 +42,24 @@ def add_tuning_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
         default="optuna.db",
         help="SQLite file backing the study, so it can be resumed and inspected.",
     )
-    group.add_argument("--n-startup-trials", type=int, default=5,
-                       help="Random trials before the TPE sampler takes over.")
-    group.add_argument("--n-warmup-steps", type=int, default=2,
-                       help="Epochs before a trial becomes eligible for pruning.")
+    group.add_argument(
+        "--n-startup-trials",
+        type=int,
+        default=5,
+        help="Random trials before the TPE sampler takes over.",
+    )
+    group.add_argument(
+        "--n-warmup-steps",
+        type=int,
+        default=2,
+        help="Epochs before a trial becomes eligible for pruning.",
+    )
     return parser
 
 
-def run_study(cfg: argparse.Namespace, run_training: callable, default_study_name: str) -> optuna.Study:
+def run_study(
+    cfg: argparse.Namespace, run_training: callable, default_study_name: str
+) -> optuna.Study:
     """Create or resume a study and optimize it.
 
     Parameters
@@ -68,15 +78,21 @@ def run_study(cfg: argparse.Namespace, run_training: callable, default_study_nam
     """
     space = cfg.config_values.get("search_space")
     if not space:
-        raise SystemExit("no 'search_space' block in the config; pass --config configs/tune_*.yaml")
+        raise SystemExit(
+            "no 'search_space' block in the config; pass --config configs/tune_*.yaml"
+        )
 
     study = optuna.create_study(
         study_name=cfg.study_name or default_study_name,
         storage=f"sqlite:///{cfg.storage}",
         direction="maximize",
         load_if_exists=True,
-        sampler=optuna.samplers.TPESampler(seed=cfg.seed, n_startup_trials=cfg.n_startup_trials),
-        pruner=optuna.pruners.MedianPruner(n_startup_trials=cfg.n_startup_trials, n_warmup_steps=cfg.n_warmup_steps),
+        sampler=optuna.samplers.TPESampler(
+            seed=cfg.seed, n_startup_trials=cfg.n_startup_trials
+        ),
+        pruner=optuna.pruners.MedianPruner(
+            n_startup_trials=cfg.n_startup_trials, n_warmup_steps=cfg.n_warmup_steps
+        ),
     )
 
     with start_run(cfg, run_name=study.study_name):
@@ -94,8 +110,9 @@ def run_study(cfg: argparse.Namespace, run_training: callable, default_study_nam
     return study
 
 
-
-def _make_objective(cfg: argparse.Namespace, run_training: callable, space: dict) -> callable:
+def _make_objective(
+    cfg: argparse.Namespace, run_training: callable, space: dict
+) -> callable:
     """Build the Optuna objective closure.
 
     Parameters

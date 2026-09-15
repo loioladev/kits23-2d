@@ -70,7 +70,9 @@ def add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     optim.add_argument("--optimizer", choices=("adamw", "adam", "sgd"), default="adamw")
     optim.add_argument("--momentum", type=float, default=0.9, help="SGD only.")
     optim.add_argument(
-        "--scheduler", choices=("none", "cosine", "plateau", "onecycle"), default="cosine"
+        "--scheduler",
+        choices=("none", "cosine", "plateau", "onecycle"),
+        default="cosine",
     )
     optim.add_argument("--warmup-iters", type=int, default=250)
     optim.add_argument("--accum-steps", type=int, default=1)
@@ -218,12 +220,18 @@ def suggest_from_space(trial: optuna.Trial, space: dict) -> dict:
             params[dest] = trial.suggest_categorical(dest, spec["choices"])
         elif kind == "int":
             params[dest] = trial.suggest_int(
-                dest, spec["low"], spec["high"], step=spec.get("step", 1),
+                dest,
+                spec["low"],
+                spec["high"],
+                step=spec.get("step", 1),
                 log=spec.get("log", False),
             )
         elif kind == "float":
             params[dest] = trial.suggest_float(
-                dest, spec["low"], spec["high"], log=spec.get("log", False),
+                dest,
+                spec["low"],
+                spec["high"],
+                log=spec.get("log", False),
                 step=spec.get("step"),
             )
         else:

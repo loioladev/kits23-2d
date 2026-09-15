@@ -8,7 +8,7 @@ vote, then any axial slice touching that instance becomes a COCO annotation
 
 KiTS instance masks overlap across classes: a kidney instance covers the whole
 kidney *including* any tumor or cyst growing inside it. The export preserves
-the raw instance masks, so a tumor annotation and its parent kidney annotation 
+the raw instance masks, so a tumor annotation and its parent kidney annotation
 cover the same pixels.
 
 Usage:
@@ -71,7 +71,7 @@ def read_volume(path: Path, dtype=None) -> np.ndarray:
     dtype : type, optional
         The desired numpy dtype for the output array. If None, the original
         dtype is preserved.
-    
+
     Returns
     -------
     np.ndarray
@@ -109,7 +109,7 @@ def window_slice(slice_2d: np.ndarray, level: float, width: float) -> np.ndarray
 
 def fill_slice_interiors(mask: np.ndarray) -> np.ndarray:
     """Fill enclosed holes in every axial slice of a boolean mask, in place.
-    
+
     Parameters
     ----------
     mask : np.ndarray

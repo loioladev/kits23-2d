@@ -68,8 +68,12 @@ def build_parser() -> argparse.ArgumentParser:
         default=4.0,
         help="Drop boxes with a side shorter than this, in pixels.",
     )
-    model.add_argument("--score-threshold", type=float, default=0.5,
-                       help="Only used when drawing predictions.")
+    model.add_argument(
+        "--score-threshold",
+        type=float,
+        default=0.5,
+        help="Only used when drawing predictions.",
+    )
     model.add_argument("--monitor", default="mAP", help="Metric to select on.")
     return parser
 
@@ -89,8 +93,11 @@ def build_loaders(cfg) -> tuple:
         the matching ground truth.
     """
     train_index = CocoIndex(
-        cfg.dataset_dir, cfg.train_split, empty_ratio=cfg.empty_ratio,
-        max_images=cfg.max_train_images, seed=cfg.seed,
+        cfg.dataset_dir,
+        cfg.train_split,
+        empty_ratio=cfg.empty_ratio,
+        max_images=cfg.max_train_images,
+        seed=cfg.seed,
     )
     val_index = CocoIndex(
         cfg.dataset_dir, cfg.val_split, max_images=cfg.max_val_images, seed=cfg.seed
@@ -160,8 +167,17 @@ def run_training(cfg, trial=None) -> float:
 
     for epoch in range(cfg.epochs):
         losses, global_step = train_one_epoch_det(
-            cfg, model, train_loader, optimizer, scaler, scheduler, per_iteration,
-            warmup, device, epoch, global_step,
+            cfg,
+            model,
+            train_loader,
+            optimizer,
+            scaler,
+            scheduler,
+            per_iteration,
+            warmup,
+            device,
+            epoch,
+            global_step,
         )
         metrics = validate_det(cfg, model, val_loader, device, coco_gt, scale_back)
         metrics.update(losses)
