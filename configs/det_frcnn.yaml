@@ -1,19 +1,20 @@
-# Full-scale Faster R-CNN training. Batch size 4 is about the ceiling for
-# resnet50-fpn-v2 at 512x512 on 8 GB with AMP on; use --arch mobilenet for more.
+# Full-scale Faster R-CNN training. Batch size 2 is what the Optuna search
+# (configs/tune_det.yaml, see optuna-det.db trial 9, mAP 0.405) settled on for
+# resnet50-fpn-v2 at 512x512 with AMP on; use --arch mobilenet for more.
 dataset_dir: kits32-2d
 size: 512
 
 arch: resnet50
 pretrained: true
-trainable_backbone_layers: 3
+trainable_backbone_layers: 5
 min_box_size: 4.0
 score_threshold: 0.5
 monitor: mAP
 
 epochs: 20
-batch_size: 4
-lr: 5.0e-5
-weight_decay: 1.0e-4
+batch_size: 2
+lr: 2.8e-5
+weight_decay: 1.7e-6
 optimizer: adamw
 scheduler: cosine
 # Faster R-CNN diverges easily while the freshly initialized box head is still
@@ -26,7 +27,7 @@ patience: 5
 # Empty slices produce no detection loss signal beyond background, so trimming
 # them speeds up an epoch considerably at little cost.
 empty_ratio: 0.3
-aug_strength: medium
+aug_strength: heavy
 
 num_workers: 8
 experiment: kits23-det
