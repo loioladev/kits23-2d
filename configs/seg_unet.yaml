@@ -3,31 +3,28 @@ dataset_dir: kits32-2d
 size: 512
 in_channels: 3
 
-arch: unet
+arch: unetplusplus
 encoder: resnet34
 encoder_weights: imagenet
 attention: ""
 
 loss: dicece
-dice_weight: 0.5
+dice_weight: 0.38254534577572263
 ce_weight: 0.5
 monitor: mean_dice
 
 epochs: 30
-batch_size: 8
-lr: 3.0e-4
-weight_decay: 1.0e-4
+batch_size: 4
+lr: 1.329291894316216e-4
+weight_decay: 6.351221010640704e-3
 optimizer: adamw
 scheduler: cosine
 warmup_iters: 250
 amp: true
 patience: 6
 
-# Half of the exported slices are annotation-free. Keeping all of them teaches
-# the model what "no kidney here" looks like, but costs twice the epoch time;
-# drop to ~0.3 if epochs are too slow.
 empty_ratio: 1.0
-aug_strength: medium
+aug_strength: light
 
 num_workers: 8
 experiment: kits23-seg
