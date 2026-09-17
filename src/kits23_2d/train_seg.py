@@ -37,6 +37,7 @@ from kits23_2d.utils import (
     resolve_device,
     save_checkpoint,
     seed_everything,
+    shutdown_loaders,
 )
 
 
@@ -217,6 +218,7 @@ def run_training(cfg, trial=None) -> float:
     mlflow.log_metric("best_" + cfg.monitor, best)
     if cfg.log_model:
         mlflow.log_artifact(str(run_dir / "best.pt"))
+    shutdown_loaders(train_loader, val_loader)
     return best
 
 

@@ -5,6 +5,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from torch.utils.data import DataLoader
 
 from kits23_2d.config import config_to_dict
 
@@ -119,6 +120,25 @@ def save_checkpoint(
         },
         path,
     )
+
+
+def shutdown_loaders(*loaders: DataLoader) -> None:
+    """Terminate the worker processes of persistent-worker DataLoaders.
+
+    With persistent_workers=True, workers stay alive across epochs and are
+    otherwise only reaped when the loader's iterator is garbage-collected,
+    which can leave the process hanging on exit.
+
+    Parameters
+    ----------
+    *loaders : DataLoader
+        The loaders to shut down; loaders without a live iterator are skipped.
+    """
+    for loader in loaders:
+        iterator = getattr(loader, "_iterator", None)
+        if iterator is not None:
+            iterator._shutdown_workers()
+            loader._iterator = None
 
 
 def load_checkpoint(path: Path) -> dict:
