@@ -12,7 +12,7 @@ the raw instance masks, so a tumor annotation and its parent kidney annotation
 cover the same pixels.
 
 Usage:
-    uv run  src/kits32_32/convert.py --dataset-dir dataset --output-dir kits32-2d
+    uv run  src/kits23_32/convert.py --dataset-dir dataset --output-dir kits23-2d
 """
 
 import argparse
@@ -170,7 +170,7 @@ def majority_vote_instance(files: list) -> np.ndarray:
     """Create the majority-vote mask for one instance from all its annotators.
 
     Strictly more than half of the annotators must agree, matching the behavior of
-    KiTS32 official segmentation pattern.
+    kits23 official segmentation pattern.
 
     Parameters
     ----------
@@ -449,7 +449,7 @@ def parse_args() -> argparse.Namespace:
 
     # Define the arguments
     parser.add_argument("--dataset-dir", type=Path, default=Path("dataset"))
-    parser.add_argument("--output-dir", type=Path, default=Path("kits32-2d"))
+    parser.add_argument("--output-dir", type=Path, default=Path("kits23-2d"))
     parser.add_argument("--window-level", type=float, default=40.0)
     parser.add_argument("--window-width", type=float, default=400.0)
     parser.add_argument(

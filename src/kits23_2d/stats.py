@@ -11,7 +11,7 @@ class (mask overlay + bbox + label) and a handful of empty slices, so the
 dataset can be sanity-checked visually.
 
 Usage:
-    uv run kits23_2d/stats --dataset-dir kits32-2d --output-dir stats_output
+    uv run kits23_2d/stats --dataset-dir kits23-2d --output-dir stats_output
 """
 
 import argparse
@@ -263,7 +263,7 @@ def parse_args() -> argparse.Namespace:
         The parsed command line arguments.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--dataset-dir", type=Path, default=Path("kits32-2d"))
+    parser.add_argument("--dataset-dir", type=Path, default=Path("kits23-2d"))
     parser.add_argument("--output-dir", type=Path, default=Path("stats_output"))
     parser.add_argument(
         "--num-examples",

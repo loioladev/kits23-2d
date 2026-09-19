@@ -1,5 +1,5 @@
 # Full-scale UNet training. Tuned for a single 8 GB GPU at 512x512.
-dataset_dir: kits32-2d
+dataset_dir: kits23-2d
 size: 512
 in_channels: 3
 

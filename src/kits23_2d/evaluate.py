@@ -48,7 +48,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task", choices=("seg", "det"), required=True)
     parser.add_argument("--checkpoint", type=Path, required=True)
-    parser.add_argument("--dataset-dir", type=Path, default=Path("kits32-2d"))
+    parser.add_argument("--dataset-dir", type=Path, default=Path("kits23-2d"))
     parser.add_argument("--split", default="test")
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--num-workers", type=int, default=8)

@@ -1,7 +1,7 @@
 # Full-scale Faster R-CNN training. Batch size 2 is what the Optuna search
 # (configs/tune_det.yaml, see optuna-det.db trial 9, mAP 0.405) settled on for
 # resnet50-fpn-v2 at 512x512 with AMP on; use --arch mobilenet for more.
-dataset_dir: kits32-2d
+dataset_dir: kits23-2d
 size: 512
 
 arch: resnet50

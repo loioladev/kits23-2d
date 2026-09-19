@@ -43,7 +43,7 @@ def add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     """
     data = parser.add_argument_group("data")
     data.add_argument("--config", type=Path, help="YAML file with default values.")
-    data.add_argument("--dataset-dir", type=Path, default=Path("kits32-2d"))
+    data.add_argument("--dataset-dir", type=Path, default=Path("kits23-2d"))
     data.add_argument("--train-split", default="train")
     data.add_argument("--val-split", default="val")
     data.add_argument("--size", type=int, default=512, help="Square input size.")

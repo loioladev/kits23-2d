@@ -4,7 +4,7 @@
 # consumer GPU, so trials deliberately run on a subset for a few epochs. Treat
 # the result as a ranking of configurations, then retrain the winner at full
 # scale with configs/seg_unet.yaml.
-dataset_dir: kits32-2d
+dataset_dir: kits23-2d
 size: 512
 in_channels: 3
 encoder_weights: imagenet

@@ -2,7 +2,7 @@
 #
 # Faster R-CNN is several times slower per epoch than the UNet, so the subset
 # here is smaller still. Retrain the winner with configs/det_frcnn.yaml.
-dataset_dir: kits32-2d
+dataset_dir: kits23-2d
 size: 512
 pretrained: true
 min_box_size: 4.0

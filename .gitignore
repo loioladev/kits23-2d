@@ -12,12 +12,12 @@ wheels/
 # Virtual environments
 .venv
 
-# Github repository from KiTS32
-kits32/
+# Github repository from KiTS23
+kits23/
 
 # Folders used
-dataset/
-kits32-2d/
+dataset
+kits23-2d/
 stats_output/
 
 # Training / experiment outputs
